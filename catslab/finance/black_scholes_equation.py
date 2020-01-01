@@ -6,6 +6,7 @@ class BlackScholesEquation():
     Refer: 
         1. https://www.monte-carlo-note.com/2017/04/python-option-premium-BS.html
         2. https://www.jpx.co.jp/learning/derivatives/options/02.html
+        3. http://delta-hedge.xyz/nky_iv/
     Returns:
         [type] -- [description]
     """
@@ -25,8 +26,8 @@ class BlackScholesEquation():
         Returns:
             [type] -- [description]
         """
-        d1 = (log(S0 / K) + (r - q ) * T) / (sigma * sqrt(T))+sigma*sqrt(T)/ 2
-        d2 = (log(S0 / K) + (r - q ) * T) / (sigma * sqrt(T))-sigma*sqrt(T)/ 2
+        d1 = (log(S0 / K) + (r - q) * T) / (sigma * sqrt(T))+sigma*sqrt(T)/ 2
+        d2 = (log(S0 / K) + (r - q) * T) / (sigma * sqrt(T))-sigma*sqrt(T)/ 2
         call = S0 * exp(-q * T)* norm.cdf(x=d1, loc=0, scale=1) -K * exp(-r * T) * norm.cdf(x=d2, loc=0, scale=1)
         return call
 
