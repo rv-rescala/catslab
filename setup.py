@@ -7,7 +7,7 @@ setup(
             'catslab = catslab.main:main',
         ],
     },
-    version='0.1',
+    version='0.2',
     description='',
     author='RV',
     author_email='yo-maruya@rescala.jp',
