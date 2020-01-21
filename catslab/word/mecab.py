@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from typing import Any, Iterable, List, Tuple, Callable
 from asgiref.sync import sync_to_async
 import asyncio
+import json
+from catscore.lib.logger import CatsLogging as logging
 
 @dataclass(frozen=True)
 class MecabResult:
@@ -26,6 +28,12 @@ class CatsMeCab:
         else:
             self.mecab = MeCab.Tagger(f'-d {dict_path}')
 
+    @classmethod
+    def from_json(cls, json_path: str):
+        with open(json_path,'r') as f:
+            j = json.load(f)
+            return cls(dict_path=j["dict"])
+            
     def parse(self, sentence: str) -> MecabResult:
         """[summary]
         
@@ -36,15 +44,22 @@ class CatsMeCab:
             [type] -- [description]
         """
         def _to_result(mecab_result: str):
-            _w1 = mecab_result.split("\t")
-            _w2 = _w1[1].split(",")
-            word = _w1[0]
-            word_type = _w2[0]
-            word_kana = _w2[-1]
-            return MecabResult(sencence=sentence,
-                               word=word,
-                               word_type=word_type,
-                               word_kana=word_kana)
+            try:
+                _w1 = mecab_result.split("\t")
+                _w2 = _w1[1].split(",")
+                word = _w1[0]
+                word_type = _w2[0]
+                word_kana = _w2[-1]
+                return MecabResult(sencence=sentence,
+                                word=word,
+                                word_type=word_type,
+                                word_kana=word_kana)
+            except Exception:
+                logging.info(f"CatsMeCab parse: {mecab_result} cannot parse")
+                return MecabResult(sencence="",
+                word="",
+                word_type="",
+                word_kana="")
 
         return list(map(lambda r: _to_result(r), self.mecab.parse(sentence).splitlines()[:-1]))
 
